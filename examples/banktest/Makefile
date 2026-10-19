@@ -20,11 +20,15 @@
 
 include $(APPDIR)/Make.defs
 
-PROGNAME  = banktest
-PRIORITY  = 100
-STACKSIZE = $(CONFIG_DEFAULT_TASK_STACKSIZE)
+# banktest: a task with the default stack (a shared stack bank, its heap
+# the 8 KB granule); bigtest: the same program with a 4 KB stack, which
+# gets a bank of its own and a heap of 24 KB less the stack (arch/lisa,
+# CONFIG_LISA_TASK_OWN_BANK_STACK)
+PROGNAME  = banktest bigtest
+PRIORITY  = 100 100
+STACKSIZE = $(CONFIG_DEFAULT_TASK_STACKSIZE) 4096
 MODULE    = $(CONFIG_EXAMPLES_BANKTEST)
 
-MAINSRC = banktest_main.c
+MAINSRC = banktest_main.c bigtest_main.c
 
 include $(APPDIR)/Application.mk

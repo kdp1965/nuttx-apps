@@ -47,9 +47,13 @@ int main(int argc, FAR char *argv[])
       return 1;
     }
 
+  /* A pattern that differs between bytes 0x2000 apart: an alias of the
+   * data window and the stack window would pass a plain i + pid
+   */
+
   for (i = 0; i < bytes; i++)
     {
-      p[i] = (unsigned char)(i + getpid());
+      p[i] = (unsigned char)(i + (i >> 8) * 3 + getpid());
     }
 
   printf("banktest %d: stack %p heap %p, %d bytes, sleeping %d s\n",
@@ -58,7 +62,7 @@ int main(int argc, FAR char *argv[])
 
   for (i = 0; i < bytes; i++)
     {
-      if (p[i] != (unsigned char)(i + getpid()))
+      if (p[i] != (unsigned char)(i + (i >> 8) * 3 + getpid()))
         {
           bad++;
         }

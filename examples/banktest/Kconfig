@@ -5,7 +5,9 @@ config EXAMPLES_BANKTEST
 		banktest [seconds] [bytes]: allocates bytes, sleeps, checks the
 		allocation and prints where its stack and heap are - run several
 		in the background to spread tasks over the second LISA chip's
-		memory banks (CONFIG_LISA_TASK_BANKS).
+		memory banks (CONFIG_LISA_TASK_BANKS).  bigtest is the same
+		program with a 4 KB stack: a stack bank of its own and a heap of
+		24 KB less the stack (CONFIG_LISA_TASK_OWN_BANK_STACK).
 
 if EXAMPLES_BANKTEST
 
