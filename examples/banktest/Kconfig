@@ -1,0 +1,24 @@
+config EXAMPLES_BANKTEST
+	tristate "LISA bank test: a task that mallocs, sleeps and reports its bank"
+	default n
+	---help---
+		banktest [seconds] [bytes]: allocates bytes, sleeps, checks the
+		allocation and prints where its stack and heap are - run several
+		in the background to spread tasks over the second LISA chip's
+		memory banks (CONFIG_LISA_TASK_BANKS).
+
+if EXAMPLES_BANKTEST
+
+config EXAMPLES_BANKTEST_PROGNAME
+	string "Program name"
+	default "banktest"
+
+config EXAMPLES_BANKTEST_PRIORITY
+	int "banktest task priority"
+	default 100
+
+config EXAMPLES_BANKTEST_STACKSIZE
+	int "banktest stack size"
+	default DEFAULT_TASK_STACKSIZE
+
+endif
