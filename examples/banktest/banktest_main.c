@@ -34,16 +34,16 @@
 int main(int argc, FAR char *argv[])
 {
   int seconds = argc > 1 ? atoi(argv[1]) : 5;
-  int bytes   = argc > 2 ? atoi(argv[2]) : 1024;
+  unsigned int bytes = argc > 2 ? (unsigned int)atol(argv[2]) : 1024;   /* up to 65535: size_t is 16 bits */
   FAR unsigned char *p;
   int local;
-  int i;
+  unsigned int i;
   int bad = 0;
 
   p = malloc(bytes);
   if (p == NULL)
     {
-      printf("banktest %d: malloc(%d) failed\n", getpid(), bytes);
+      printf("banktest %d: malloc(%u) failed\n", getpid(), bytes);
       return 1;
     }
 
@@ -56,7 +56,7 @@ int main(int argc, FAR char *argv[])
       p[i] = (unsigned char)(i + (i >> 8) * 3 + getpid());
     }
 
-  printf("banktest %d: stack %p heap %p, %d bytes, sleeping %d s\n",
+  printf("banktest %d: stack %p heap %p, %u bytes, sleeping %d s\n",
          getpid(), &local, p, bytes, seconds);
   sleep(seconds);
 
