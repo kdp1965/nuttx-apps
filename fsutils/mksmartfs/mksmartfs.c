@@ -150,9 +150,10 @@ int mksmartfs(FAR const char *pathname, uint16_t sectorsize)
   /* Perform a low-level SMART format */
 
 #ifdef CONFIG_SMARTFS_MULTI_ROOT_DIRS
-  ret = ioctl(fd, BIOC_LLFORMAT, (sectorsize << 16) | nrootdirs);
+  ret = ioctl(fd, BIOC_LLFORMAT,
+              ((unsigned long)sectorsize << 16) | nrootdirs);
 #else
-  ret = ioctl(fd, BIOC_LLFORMAT, sectorsize << 16);
+  ret = ioctl(fd, BIOC_LLFORMAT, (unsigned long)sectorsize << 16);
 #endif
   if (ret != OK)
     {
@@ -183,7 +184,8 @@ int mksmartfs(FAR const char *pathname, uint16_t sectorsize)
   for (; x < nrootdirs; x++)
 #endif
     {
-      ret = ioctl(fd, BIOC_ALLOCSECT, SMARTFS_ROOT_DIR_SECTOR + x);
+      ret = ioctl(fd, BIOC_ALLOCSECT,
+                  (unsigned long)(SMARTFS_ROOT_DIR_SECTOR + x));
       if (ret != SMARTFS_ROOT_DIR_SECTOR + x)
         {
           ret = -EIO;
