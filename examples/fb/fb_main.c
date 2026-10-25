@@ -674,7 +674,7 @@ int main(int argc, FAR char *argv[])
              color, area.x, area.y, area.w, area.h);
 
       draw_rect(&state, &area, color);
-      usleep(500 * 1000);
+      usleep(500 * 1000L);
 
       width  -= (2 * xstep);
       height -= (2 * ystep);
