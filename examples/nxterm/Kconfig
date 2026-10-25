@@ -40,6 +40,13 @@ config EXAMPLES_NXTERM_SERVERPRIO
 	int "Server priority"
 	default 120
 
+config EXAMPLES_NXTERM_FULLSCREEN
+	bool "Full-screen window"
+	default n
+	---help---
+		The window fills the display instead of three quarters of it, inset
+		by an eighth on each side - for a small display (a 128x64 OLED).
+
 config EXAMPLES_NXTERM_BPP
 	int "Pixel width"
 	default 16

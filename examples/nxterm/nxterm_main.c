@@ -268,13 +268,27 @@ int main(int argc, FAR char *argv[])
 
   /* Determine the size and position of the window */
 
+#ifdef CONFIG_EXAMPLES_NXTERM_FULLSCREEN
+  /* The whole display: a small one (a 128x64 OLED) has no room for a
+   * window inset by an eighth on every side
+   */
+
+  g_nxterm_vars.wndo.wsize.w = g_nxterm_vars.xres;
+  g_nxterm_vars.wndo.wsize.h = g_nxterm_vars.yres;
+#else
   g_nxterm_vars.wndo.wsize.w = g_nxterm_vars.xres / 2 +
                                g_nxterm_vars.xres / 4;
   g_nxterm_vars.wndo.wsize.h = g_nxterm_vars.yres / 2 +
                                g_nxterm_vars.yres / 4;
+#endif
 
+#ifdef CONFIG_EXAMPLES_NXTERM_FULLSCREEN
+  g_nxterm_vars.wpos.x       = 0;
+  g_nxterm_vars.wpos.y       = 0;
+#else
   g_nxterm_vars.wpos.x       = g_nxterm_vars.xres / 8;
   g_nxterm_vars.wpos.y       = g_nxterm_vars.yres / 8;
+#endif
 
   /* Set the window position */
 
