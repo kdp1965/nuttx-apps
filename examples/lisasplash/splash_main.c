@@ -23,7 +23,7 @@
 /* The "splash" command: a NuttX splash screen for the LISA chip on Tiny
  * Tapeout, drawn through NX on a 1 bpp display (the Arty board's SSD1309
  * 128x64 OLED).  The Tiny Tapeout logo (or Calvin, from the LISA tile's
- * art) on the left; a rule; "NuttX" in Sans 17x23 bold and "on LISA",
+ * art, in dark ink on a lit pane) on the left; a rule; "NuttX" in Sans 17x23 bold and "on LISA",
  * "Tiny", "Tapeout" in the X11 6x10 font on the right.
  *
  *   splash [tt|calvin] [seconds]
@@ -192,13 +192,14 @@ static void splash_fill(nxgl_coord_t x0, nxgl_coord_t y0,
   nx_fill(g_splash.hbkgd, &rect, c);
 }
 
-/* A 1 bpp image (rows MSB first) with its top left at x, y.  The rows are
- * copied to RAM first: the NX server task reads them.
+/* A 1 bpp image (rows MSB first) with its top left at x, y, its bits
+ * inverted with invert (dark ink on a lit ground).  The rows are copied to
+ * RAM first: the NX server task reads them.
  */
 
 static void splash_image(nxgl_coord_t x, nxgl_coord_t y,
                          FAR const uint8_t *bits, nxgl_coord_t w,
-                         nxgl_coord_t h, unsigned int stride)
+                         nxgl_coord_t h, unsigned int stride, bool invert)
 {
   struct nxgl_rect_s dest;
   struct nxgl_point_s origin;
@@ -213,6 +214,16 @@ static void splash_image(nxgl_coord_t x, nxgl_coord_t y,
     }
 
   memcpy(ram, bits, size);
+  if (invert)
+    {
+      size_t i;
+
+      for (i = 0; i < size; i++)
+        {
+          ram[i] = (uint8_t)~ram[i];
+        }
+    }
+
   dest.pt1.x = x;
   dest.pt1.y = y;
   dest.pt2.x = x + w - 1;
@@ -317,13 +328,17 @@ static void splash_draw(bool calvin)
 
   if (calvin)
     {
+      /* Calvin as he is drawn: dark ink on a lit pane */
+
+      splash_fill(0, 0, 63, bottom, LIT);
       splash_image((64 - CALVIN_WIDTH) / 2, (g_splash.yres - CALVIN_HEIGHT) / 2,
-                   g_calvin, CALVIN_WIDTH, CALVIN_HEIGHT, CALVIN_STRIDE);
+                   g_calvin, CALVIN_WIDTH, CALVIN_HEIGHT, CALVIN_STRIDE, true);
     }
   else
     {
       splash_image((64 - TTLOGO_WIDTH) / 2, (g_splash.yres - TTLOGO_HEIGHT) / 2,
-                   g_ttlogo, TTLOGO_WIDTH, TTLOGO_HEIGHT, TTLOGO_STRIDE);
+                   g_ttlogo, TTLOGO_WIDTH, TTLOGO_HEIGHT, TTLOGO_STRIDE,
+                   false);
     }
 
   /* The rule between, and one under "NuttX" */
